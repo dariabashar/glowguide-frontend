@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import Image from "next/image";
 import Link from "next/link";
 import { 
   Search, 
@@ -145,11 +144,6 @@ export default function CheckIngredientsPage() {
 
   const scanFromPhoto = () => {
     document.getElementById('photo-upload')?.click();
-  };
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
   };
 
   const fadeInLeft = {
@@ -431,7 +425,7 @@ export default function CheckIngredientsPage() {
                           </h3>
                         </div>
                         <div className="space-y-3">
-                          {results.comedogenic.map((ingredient: any, index: number) => (
+                          {results.comedogenic.map((ingredient: IngredientNote, index: number) => (
                             <div key={index} className="p-3 bg-rose-50 rounded-xl">
                               <h4 className="font-medium text-sm" style={{ color: 'var(--text-dark)' }}>{ingredient.name}</h4>
                               <p className="text-xs font-light mb-1" style={{ color: 'var(--text-dark)' }}>{ingredient.description}</p>
@@ -456,7 +450,7 @@ export default function CheckIngredientsPage() {
                           </h3>
                         </div>
                         <div className="space-y-3">
-                          {results.safe.map((ingredient: any, index: number) => (
+                          {results.safe.map((ingredient: IngredientNote, index: number) => (
                             <div key={index} className="p-3 bg-green-50 rounded-xl">
                               <h4 className="font-medium text-sm" style={{ color: 'var(--text-dark)' }}>{ingredient.name}</h4>
                               <p className="text-xs font-light" style={{ color: 'var(--text-dark)' }}>{ingredient.description}</p>
@@ -478,7 +472,7 @@ export default function CheckIngredientsPage() {
                           </h3>
                         </div>
                         <div className="space-y-3">
-                          {results.unknown.map((ingredient: any, index: number) => (
+                          {results.unknown.map((ingredient: IngredientNote, index: number) => (
                             <div key={index} className="p-3 bg-yellow-50 rounded-xl">
                               <h4 className="font-medium text-sm" style={{ color: 'var(--text-dark)' }}>{ingredient.name}</h4>
                               <p className="text-xs font-light" style={{ color: 'var(--text-dark)' }}>{ingredient.description}</p>

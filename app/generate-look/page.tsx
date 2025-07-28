@@ -12,7 +12,6 @@ import {
   Sparkles, 
   ArrowLeft,
   CheckCircle,
-  Star,
   Heart,
   AlertCircle,
   RefreshCw,
@@ -26,14 +25,18 @@ interface AnalysisResult {
   image_url: string;
   prompt: string;
   spec: {
-    foundation?: string | { tone?: string; undertone?: string; coverage?: string };
-    blush?: string | { shade?: string; placement?: string };
-    lipstick?: string | { shade?: string; finish?: string };
-    eyeshadow?: string | { palette?: string; style?: string };
-    skin_tone?: string;
-    face_shape?: string;
-    eye_color?: string;
-    [key: string]: any; // For any additional fields
+    foundation?: string | { tone: string; undertone: string; coverage: string };
+    concealer?: string | { shade: string; coverage: string };
+    powder?: string | { type: string; finish: string };
+    blush?: string | { shade: string; placement: string };
+    bronzer?: string | { shade: string; placement: string };
+    highlighter?: string | { shade: string; placement: string };
+    eyeshadow?: string | { colors: string; style: string };
+    eyeliner?: string | { type: string; style: string };
+    mascara?: string | { type: string; effect: string };
+    lipstick?: string | { shade: string; finish: string };
+    lip_liner?: string | { shade: string };
+    eyebrow?: string | { product: string; style: string };
   };
 }
 
@@ -150,11 +153,6 @@ export default function GenerateLookPage() {
     } finally {
       setIsSaving(false);
     }
-  };
-
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
   };
 
   const fadeInLeft = {
@@ -423,29 +421,27 @@ export default function GenerateLookPage() {
                           <Sparkles className="h-4 w-4 mr-2" style={{ color: 'var(--btn-color)' }} />
                           Makeup Specifications
                         </h3>
-                        <div className="space-y-2 text-sm">
-                          {analysisResults.spec.foundation && (
-                            <div className="flex justify-between">
-                              <span style={{ color: 'var(--text-dark)' }}>Foundation:</span>
-                              <span style={{ color: '#9A5151' }}>
-                                {typeof analysisResults.spec.foundation === 'string' 
-                                  ? analysisResults.spec.foundation 
-                                  : `${analysisResults.spec.foundation.tone || ''} ${analysisResults.spec.foundation.undertone || ''} ${analysisResults.spec.foundation.coverage || ''}`.trim()
-                                }
-                              </span>
-                            </div>
-                          )}
-                          {analysisResults.spec.blush && (
-                            <div className="flex justify-between">
-                              <span style={{ color: 'var(--text-dark)' }}>Blush:</span>
-                              <span style={{ color: '#9A5151' }}>
-                                {typeof analysisResults.spec.blush === 'string' 
-                                  ? analysisResults.spec.blush 
-                                  : `${analysisResults.spec.blush.shade || ''} (${analysisResults.spec.blush.placement || ''})`.trim()
-                                }
-                              </span>
-                            </div>
-                          )}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-3">
+                            <h4 className="font-semibold text-sm" style={{ color: 'var(--text-dark)' }}>Foundation</h4>
+                            <span className="text-sm text-gray-600">
+                              {typeof analysisResults.spec.foundation === 'string' 
+                                ? analysisResults.spec.foundation 
+                                : `${analysisResults.spec.foundation?.tone || ''} ${analysisResults.spec.foundation?.undertone || ''} ${analysisResults.spec.foundation?.coverage || ''}`.trim()
+                              }
+                            </span>
+                          </div>
+                          
+                          <div className="space-y-3">
+                            <h4 className="font-semibold text-sm" style={{ color: 'var(--text-dark)' }}>Blush</h4>
+                            <span className="text-sm text-gray-600">
+                              {typeof analysisResults.spec.blush === 'string' 
+                                ? analysisResults.spec.blush 
+                                : `${analysisResults.spec.blush?.shade || ''} (${analysisResults.spec.blush?.placement || ''})`.trim()
+                              }
+                            </span>
+                          </div>
+
                           {analysisResults.spec.lipstick && (
                             <div className="flex justify-between">
                               <span style={{ color: 'var(--text-dark)' }}>Lipstick:</span>
@@ -463,21 +459,9 @@ export default function GenerateLookPage() {
                               <span style={{ color: '#9A5151' }}>
                                 {typeof analysisResults.spec.eyeshadow === 'string' 
                                   ? analysisResults.spec.eyeshadow 
-                                  : `${analysisResults.spec.eyeshadow.palette || ''} ${analysisResults.spec.eyeshadow.style || ''}`.trim()
+                                  : `${analysisResults.spec.eyeshadow.colors || ''} ${analysisResults.spec.eyeshadow.style || ''}`.trim()
                                 }
                               </span>
-                            </div>
-                          )}
-                          {analysisResults.spec.skin_tone && (
-                            <div className="flex justify-between">
-                              <span style={{ color: 'var(--text-dark)' }}>Skin Tone:</span>
-                              <span style={{ color: '#9A5151' }}>{analysisResults.spec.skin_tone}</span>
-                            </div>
-                          )}
-                          {analysisResults.spec.face_shape && (
-                            <div className="flex justify-between">
-                              <span style={{ color: 'var(--text-dark)' }}>Face Shape:</span>
-                              <span style={{ color: '#9A5151' }}>{analysisResults.spec.face_shape}</span>
                             </div>
                           )}
                         </div>

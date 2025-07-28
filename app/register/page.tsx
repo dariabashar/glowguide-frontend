@@ -8,25 +8,17 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { 
   User, 
-  Mail, 
   Lock, 
   ArrowLeft,
   Eye,
   EyeOff,
-  Heart,
-  Sparkles,
   CheckCircle,
   AlertCircle,
   Loader2,
   Globe,
-  X
+  X,
+  Sparkles
 } from "lucide-react";
-
-// Interface for API response
-interface RegisterResponse {
-  access_token: string;
-  token_type: string;
-}
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);

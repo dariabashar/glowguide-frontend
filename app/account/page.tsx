@@ -3,58 +3,52 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import Link from "next/link";
 import { 
   User, 
-  Settings, 
-  Heart, 
-  Camera, 
-  Search, 
-  Palette,
-  ArrowLeft,
   Edit,
+  Trash2,
+  Filter,
+  LogOut,
+  Loader2,
+  AlertCircle,
+  ArrowLeft,
   Save,
   X,
-  LogOut,
-  Sparkles,
-  AlertCircle,
-  Loader2,
-  Trash2
+  Heart
 } from "lucide-react";
 
 // Interfaces
 interface SavedResult {
   id: string;
-  type: 'generate-look' | 'try-on' | 'ingredients';
+  type: 'generate-look' | 'try-on' | 'check-ingredients';
   title: string;
   image_url?: string;
-  prompt?: string;
-  spec?: any;
   created_at: string;
+  data: Record<string, unknown>;
 }
 
 interface UserProfile {
+  id: string;
   username: string;
-  email?: string;
   created_at: string;
 }
 
 export default function AccountPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  
-  // User data
   const [user, setUser] = useState<UserProfile | null>(null);
-  const [editedUsername, setEditedUsername] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [savedResults, setSavedResults] = useState<SavedResult[]>([]);
+  const [filterType, setFilterType] = useState<'all' | 'generate-look' | 'try-on' | 'check-ingredients'>('all');
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const [editingUsername, setEditingUsername] = useState(false);
+  const [newUsername, setNewUsername] = useState('');
   
   // Saved results
-  const [savedResults, setSavedResults] = useState<SavedResult[]>([]);
   const [activeTab, setActiveTab] = useState<'profile' | 'saved'>('profile');
 
   // Check authentication on mount
@@ -81,7 +75,7 @@ export default function AccountPage() {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
-        setEditedUsername(userData.username);
+        setNewUsername(userData.username);
       } else {
         localStorage.removeItem('access_token');
         window.location.href = '/login';
@@ -113,7 +107,7 @@ export default function AccountPage() {
   };
 
   const updateUsername = async () => {
-    if (!editedUsername.trim()) {
+    if (!newUsername.trim()) {
       setError('Username cannot be empty');
       return;
     }
@@ -130,14 +124,14 @@ export default function AccountPage() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          username: editedUsername
+          username: newUsername
         })
       });
 
       if (response.ok) {
-        setUser(prev => prev ? { ...prev, username: editedUsername } : null);
-        setSuccess('Username updated successfully!');
-        setIsEditing(false);
+        setUser(prev => prev ? { ...prev, username: newUsername } : null);
+        // setSuccess('Username updated successfully!'); // Removed as per new_code
+        setEditingUsername(false);
       } else {
         const data = await response.json();
         setError(data.detail || 'Failed to update username');
@@ -162,7 +156,7 @@ export default function AccountPage() {
 
       if (response.ok) {
         setSavedResults(prev => prev.filter(result => result.id !== resultId));
-        setSuccess('Result deleted successfully!');
+        // setSuccess('Result deleted successfully!'); // Removed as per new_code
       }
     } catch (error) {
       console.error('Error deleting result:', error);
@@ -177,10 +171,10 @@ export default function AccountPage() {
 
   const getResultIcon = (type: string) => {
     switch (type) {
-      case 'generate-look': return <Sparkles className="h-4 w-4" />;
-      case 'try-on': return <Camera className="h-4 w-4" />;
-      case 'ingredients': return <Search className="h-4 w-4" />;
-      default: return <Palette className="h-4 w-4" />;
+      case 'generate-look': return <Filter className="h-4 w-4" />;
+      case 'try-on': return <Filter className="h-4 w-4" />;
+      case 'check-ingredients': return <Filter className="h-4 w-4" />;
+      default: return <Filter className="h-4 w-4" />;
     }
   };
 
@@ -188,7 +182,7 @@ export default function AccountPage() {
     switch (type) {
       case 'generate-look': return 'AI Look';
       case 'try-on': return 'Virtual Try-On';
-      case 'ingredients': return 'Ingredients Check';
+      case 'check-ingredients': return 'Ingredients Check';
       default: return 'Result';
     }
   };
@@ -262,19 +256,6 @@ export default function AccountPage() {
             </motion.div>
           )}
 
-          {success && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4"
-            >
-              <div className="flex items-center space-x-2">
-                <Sparkles className="h-5 w-5 text-green-500" />
-                <p className="text-green-600">{success}</p>
-              </div>
-            </motion.div>
-          )}
-
           {/* Tabs */}
           <div className="flex justify-center mb-8">
             <div className="flex space-x-1 bg-white rounded-full p-1 shadow-sm">
@@ -323,12 +304,12 @@ export default function AccountPage() {
                         Username
                       </label>
                       <div className="flex items-center space-x-3">
-                        {isEditing ? (
+                        {editingUsername ? (
                           <>
                             <Input
                               type="text"
-                              value={editedUsername}
-                              onChange={(e) => setEditedUsername(e.target.value)}
+                              value={newUsername}
+                              onChange={(e) => setNewUsername(e.target.value)}
                               className="flex-1 rounded-full"
                               style={{ 
                                 borderColor: 'var(--bg-medium)', 
@@ -347,8 +328,8 @@ export default function AccountPage() {
                             </Button>
                             <Button
                               onClick={() => {
-                                setIsEditing(false);
-                                setEditedUsername(user?.username || '');
+                                setEditingUsername(false);
+                                setNewUsername(user?.username || '');
                               }}
                               size="sm"
                               variant="outline"
@@ -367,7 +348,7 @@ export default function AccountPage() {
                               <span style={{ color: 'var(--text-dark)' }}>{user?.username}</span>
                             </div>
                             <Button
-                              onClick={() => setIsEditing(true)}
+                              onClick={() => setEditingUsername(true)}
                               size="sm"
                               variant="outline"
                               className="rounded-full"
@@ -401,7 +382,7 @@ export default function AccountPage() {
                               color: 'var(--text-dark)'
                             }}
                           >
-                            <Sparkles className="h-4 w-4 mr-2" />
+                            <Filter className="h-4 w-4 mr-2" />
                             Generate Look
                           </Button>
                         </Link>
@@ -415,7 +396,7 @@ export default function AccountPage() {
                               color: 'var(--text-dark)'
                             }}
                           >
-                            <Camera className="h-4 w-4 mr-2" />
+                            <Filter className="h-4 w-4 mr-2" />
                             Try Makeup
                           </Button>
                         </Link>
@@ -429,7 +410,7 @@ export default function AccountPage() {
                               color: 'var(--text-dark)'
                             }}
                           >
-                            <Search className="h-4 w-4 mr-2" />
+                            <Filter className="h-4 w-4 mr-2" />
                             Check Ingredients
                           </Button>
                         </Link>
@@ -459,13 +440,13 @@ export default function AccountPage() {
                   <div className="flex justify-center space-x-4">
                     <Link href="/generate-look">
                       <Button className="rounded-full" style={{ backgroundColor: 'var(--btn-color)', color: 'var(--bg-light)' }}>
-                        <Sparkles className="h-4 w-4 mr-2" />
+                        <Filter className="h-4 w-4 mr-2" />
                         Generate Look
                       </Button>
                     </Link>
                     <Link href="/try-on">
                       <Button variant="outline" className="rounded-full" style={{ borderColor: 'var(--bg-medium)', color: 'var(--text-dark)' }}>
-                        <Camera className="h-4 w-4 mr-2" />
+                        <Filter className="h-4 w-4 mr-2" />
                         Try Makeup
                       </Button>
                     </Link>
@@ -504,11 +485,7 @@ export default function AccountPage() {
                             {result.title}
                           </h3>
                           
-                          {result.prompt && (
-                            <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                              {result.prompt}
-                            </p>
-                          )}
+                          {/* result.prompt is removed as per new_code */}
                           
                           <p className="text-xs text-gray-500">
                             {new Date(result.created_at).toLocaleDateString()}

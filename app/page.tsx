@@ -5,25 +5,28 @@ import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { 
+  ArrowRight, 
   Sparkles, 
   Camera, 
-  Search,
-  Palette,
+  Search, 
   Star,
-  Heart,
-  Phone,
-  Mail,
-  CheckCircle,
-  User,
+  MessageCircle,
   X,
-  Globe,
-  MessageCircle
-} from "lucide-react";
+  Send,
+  Loader2,
+  AlertCircle,
+  User,
+  LogOut,
+  Palette,
+  Heart,
+  CheckCircle,
+  Phone,
+  Mail
+} from 'lucide-react';
 
 export default function Home() {
   const [heroRef, heroInView] = useInView({ threshold: 0.3 });

@@ -7,24 +7,16 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { 
-  Mail, 
   Lock, 
   ArrowLeft,
   Eye,
   EyeOff,
-  Heart,
   Sparkles,
   CheckCircle,
   User,
   AlertCircle,
   Loader2
 } from "lucide-react";
-
-// Interface for API response
-interface LoginResponse {
-  access_token: string;
-  token_type: string;
-}
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -263,7 +255,7 @@ export default function LoginPage() {
               {/* Sign Up Link */}
               <div className="mt-6 text-center">
                 <p className="font-light" style={{ color: 'var(--text-dark)' }}>
-                  Don't have an account?{" "}
+                  Don&apos;t have an account?{" "}
                   <Link href="/register" className="font-medium hover:underline" style={{ color: 'var(--btn-color)' }}>
                     Sign up
                   </Link>
