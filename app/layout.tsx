@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,6 +44,7 @@ export default function RootLayout({
         style={{ backgroundColor: 'var(--bg-light)' }}
       >
         {children}
+        <GoogleAnalytics gaId="G-XG6TCTJ3B6" />
       </body>
     </html>
   );
