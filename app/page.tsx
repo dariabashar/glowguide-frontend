@@ -217,8 +217,8 @@ export default function Home() {
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="transition-colors text-sm font-light" style={{ color: 'var(--text-dark)' }}>Sign In</Link>
-                  <Link href="/register" className="transition-colors text-sm font-light" style={{ color: 'var(--text-dark)' }}>Sign Up</Link>
+                  <Link href="/login" className="transition-colors text-sm font-light bot-signin" style={{ color: 'var(--text-dark)' } }>Sign In</Link>
+                  <Link href="/register" className="transition-colors text-sm font-light bot-signup" style={{ color: 'var(--text-dark)' }}>Sign Up</Link>
                 </>
               )}
               <a href="#contact" className="transition-colors text-sm font-light" style={{ color: 'var(--text-dark)' }}>Contact</a>
